@@ -127,24 +127,58 @@
     </script>
 
 
-    <script type="text/javascript">
+    <script>
 
         vkBridge.send('VKWebAppInit');
-
+         
             function FullAdShow() {
-                vkBridge.send('VKWebAppShowNativeAds', { ad_format: "interstitial" }).then(data => {
-                    console.log(data);
-                    myGameInstance.SendMessage('GameDesign', 'OnShown');
+                bridge.send('VKWebAppShowNativeAds', {
+                    ad_format: 'interstitial' /* Тип рекламы */
+                })
+                    .then((data) => {
+                        if (data.result) {
+                            myGameInstance.SendMessage('GameDesign', 'OnShown');
+                        } else {
+                            myGameInstance.SendMessage('GameDesign', 'OnShown');
+                        }
+                    }).catch((error) => { console.log(error); myGameInstance.SendMessage('GameDesign', 'OnShown'); });
+            }
+
+
+            function RewardedShow(val) {
+               
+                bridge.send('VKWebAppShowNativeAds', { ad_format: 'reward' })
+                    .then((data) => {
+                        if (data.result) // Успех
+                            myGameInstance.SendMessage('GameDesign', 'OnShownReward', val);
+                        else // Ошибка 
+                            console.log('Ошибка при показе');
+                            myGameInstance.SendMessage('GameDesign', 'OnShownReward', 0);
+                    }).catch((error) => { console.log(error); /* Ошибка */ });
+            }
+     
+            function auth() {
+                vkBridge.send('VKWebAppGetUserInfo').then(_info => {
+                    console.log(_info);
+                   // unityI.SendMessage('VKSDK', 'AuthenticateSuccess', JSON.stringify(_info));
                 });
             }
 
-            function RewardedShow(val) {
-                vkBridge.send('VKWebAppShowNativeAds', { ad_format: "reward" }).then(data => {
+            function getUserData() {
+                vkBridge.send("VKWebAppStorageGet", { "keys": ["_save"] }).then(data => {
                     console.log(data);
-                    myGameInstance.SendMessage('GameDesign', 'OnShownReward',val);
-                })
+                    //unityI.SendMessage('VKSDK', 'DataGetting', JSON.stringify(data));
+                });
             }
-     
+
+            function setUserData(data) {
+                console.log(data);
+               // vkBridge.send('VKWebAppStorageSet', { "key": "_save", "value": data }).then(_info => {
+                    console.log("Saved!")
+                });
+            }
+
+
 
     </script>
 </body >
