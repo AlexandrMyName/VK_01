@@ -131,19 +131,20 @@
 
         vkBridge.send('VKWebAppInit');
 
-        function FullAdShow() {
-            vkBridge.send('VKWebAppShowNativeAds', { ad_format: "interstitial" }).then(data => {
-                console.log(data);
-                myGameInstance.SendMessage('GameDesign', 'OnShown');
-            });
-
-            function RewardedShow() {
-                vkBridge.send('VKWebAppShowNativeAds', { ad_format: "reward" }).then(data => {
+            function FullAdShow() {
+                vkBridge.send('VKWebAppShowNativeAds', { ad_format: "interstitial" }).then(data => {
                     console.log(data);
                     myGameInstance.SendMessage('GameDesign', 'OnShown');
+                });
+            }
+
+            function RewardedShow(val) {
+                vkBridge.send('VKWebAppShowNativeAds', { ad_format: "reward" }).then(data => {
+                    console.log(data);
+                    myGameInstance.SendMessage('GameDesign', 'OnShownReward',val);
                 })
             }
-    }
+     
 
     </script>
 </body >
